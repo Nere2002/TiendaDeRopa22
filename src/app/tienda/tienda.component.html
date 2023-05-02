@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Tienda de Ropa</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+<h2>Productos seleccionados:</h2>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Talla</th>
+    <th>Color</th>
+    <th>Precio</th>
+    <th>Eliminar</th>
+  </tr>
+  <tr *ngFor="let producto of productosSeleccionados; let i = index">
+    <td>{{producto.id}}</td>
+    <td>{{ producto.talla }}</td>
+    <td>{{ producto.color }}</td>
+    <td>{{ producto.precio }}€</td>
+    <td><button (click)="eliminarProducto(i)">Eliminar</button></td>
+  </tr>
+</table>
+
+<h1>PRODUCTOS</h1>
+
+<div class="productes">
+  <table border="0">
+    <tr>
+      <th>
+        <div class="texto1">
+          <h3 id="1">SUDADERA NEGRA HOMBRE</h3>
+          <p>Componentes: 68% algodon - 32% poliester</p>
+          <p>Precio: 14,99€</p>
+          <hr width="300px" size="2" color="black">
+          <hr color="white">
+          <label>Elige una talla: </label>
+          <select #talla>
+            <option *ngFor="let producto of productos" [value]="producto.talla">{{ producto.talla }}</option>
+          </select>
+          <hr color="white">
+          <label>Elige una color: </label>
+          <select #color>
+            <option *ngFor="let producto of productos" [value]="producto.color">{{ producto.color }}</option>
+          </select>
+          <hr color="white">
+          <hr color="white">
+          <hr color="white">
+          <hr color="white">
+          <button class="boton1" (click)="agregarProducto(talla.value, color.value)">COMPRAR</button>
+        </div>
+      </th>
+    </tr>
+  </table>
+</div>
+
+<h2>Precio total: {{ precioTotal }}€</h2>
+<button (click)="guardarFactura()">Guardar factura</button>
+<h1>GRAFICO</h1>
+<script>
+  fetch('/grafico').then(res => res.json())
+    .then(results => {
+      const labels = results.map((row) => row.id_producto);
+      const data = results.map((row) => row.num_comparaciones);
+
+      const canvas = document.getElementById('grafico');
+      const ctx = canvas.getContext('2d');
+
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Cantidad de comparaciones',
+            data: data,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    });
+</script>
+
+<canvas id="grafico"></canvas>
+<script src="grafico.js"></script>
+
+<footer>
+  Projecte Ruben & Nerea &reg; 2023
+</footer>
+</body>
+</html>
