@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
+import * as Chart from 'chart.js';
 
 interface Producto {
   id:number;
@@ -7,14 +9,40 @@ interface Producto {
   color: string;
   precio: number;
 }
+interface Datos{
+  id:number;
+  id_producto:number;
+  num_comparaciones:number;
+}
 @Component({
   selector: 'app-tienda',
   templateUrl: './tienda.component.html',
   styleUrls: ['./tienda.component.css']
 })
-export class TiendaComponent {
-  constructor(private http: HttpClient) {
-  }
+//export class TiendaComponent implements OnInit {
+  export class TiendaComponent  {
+
+  constructor(private http: HttpClient) { }
+  // --------------------- GRAFICO ------------------------------------
+/*  ngOnInit(): void {
+    this.http.get<any[]>('http://localhost:3000/datos-para-grafico').subscribe((data) => {
+      const labels = data.map((d) => d.mes);
+      const values = data.map((d) => d.cantidad_ventas);
+      const chartCanvas = document.querySelector('canvas');
+      new Chart(chartCanvas, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Cantidad de ventas por mes',
+            data: values,
+            backgroundColor: 'blue'
+          }]
+        }
+      });
+    });
+  }*/
+// -------------------------- FIN GRAFICO ---------------------------------
   productos: Producto[] = [
    /* producto 1*/
     { id:1, talla: 'S', color: 'Blanco', precio: 14 },
@@ -73,9 +101,6 @@ export class TiendaComponent {
       }
     );
   }
-
-
-
 
 
 

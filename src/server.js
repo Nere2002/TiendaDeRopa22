@@ -45,46 +45,43 @@ app.post('/login', (req, res) => {
     }
   });
 
-
-
 });
+// --------------------------- FACTURA ----------------------------------
 
+async function insertarFacturaEnDB() {
+  const [result, fields] = await connection.execute(
+    'INSERT INTO factura (productos, precio_total) VALUES (?, ?)',
+    [factura.productos, factura.precio_total]
+  );
+  console.log(result);
+  console.log(fields);
+}
 
-// Configura la ruta para manejar la petición POST de guardar la factura
-app.post('/factura', (req, res) => {
-  // Obtén los datos de la factura del cuerpo de la petición
+app.post('/factura', async (req, res) => {
   const factura = req.body;
+  try {
+    await insertarFacturaEnDB();
+    res.status(200).send('Factura guardada con éxito en la base de datos');
+  } catch (error) {
+    console.error('Error al guardar factura en la base de datos:', error);
+    res.status(500).send('Error al guardar factura en la base de datos');
+  }
+});
 
-  // Guarda la factura en la base de datos (aquí asumimos que ya tienes una conexión a la base de datos)
-  connection.query('INSERT INTO factura (id, productos, precio_total, fecha) VALUES (?, ?, ?, ?)', [factura.productos, factura.precioTotal], (err, result) => {
-    if (err) {
-      console.error('Error al guardar factura en la base de datos:', err);
-      res.status(500).send('Error al guardar factura en la base de datos');
+// -------------------------------- FIN FACTURA -------------------------------------------
+
+
+//---------------------- GRAFICO ----------------------------------------------------
+app.get('/datos-para-grafico', (req, res) => {
+  connection.query('SELECT mes, cantidad_ventas FROM tabla_ventas', (error, results) => {
+    if (error) {
+      res.status(500).send('Error al obtener los datos');
     } else {
-      console.log('Factura guardada con éxito en la base de datos:', result);
-      res.status(200).send('Factura guardada con éxito en la base de datos');
+      res.send(results);
     }
   });
 });
-
-app.get('/grafico', (req, res) => {
-  const query = 'SELECT id_producto, num_comparaciones FROM comparaciones';
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Error al obtener los datos de la tabla "comparaciones":', err);
-      res.status(500).send('Error al obtener los datos de la tabla "comparaciones"');
-      return;
-    }
-
-    // Procesar los resultados y enviarlos a la plantilla para renderizar el gráfico
-    const data = processData(results);
-    res.render('grafico', { data });
-    // Enviar los datos como un objeto JSON en la respuesta
-    res.json({ results });
-
-  });
-});
-
+// -------------------FIN  GRAFICO --------------------------------------------------
 
 app.listen(3000, () => {
   console.log('Server conectado al puerto 3000');

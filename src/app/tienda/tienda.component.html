@@ -62,42 +62,9 @@
 <h2>Precio total: {{ precioTotal }}€</h2>
 <button (click)="guardarFactura()">Guardar factura</button>
 <h1>GRAFICO</h1>
-<script>
-  fetch('/grafico').then(res => res.json())
-    .then(results => {
-      const labels = results.map((row) => row.id_producto);
-      const data = results.map((row) => row.num_comparaciones);
-
-      const canvas = document.getElementById('grafico');
-      const ctx = canvas.getContext('2d');
-
-      const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Cantidad de comparaciones',
-            data: data,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          }
-        }
-      });
-    });
-</script>
-
 <canvas id="grafico"></canvas>
-<script src="grafico.js"></script>
+
+
 
 <footer>
   Projecte Ruben & Nerea &reg; 2023
